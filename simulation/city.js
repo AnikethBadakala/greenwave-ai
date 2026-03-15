@@ -1,8 +1,3 @@
-/*
-City Simulation Engine
-This runs the simulation of the city.
-*/
-
 const Intersection = require("./intersection")
 const Road = require("./road")
 const Hospital = require("./hospital")
@@ -23,29 +18,37 @@ const hospital = new Hospital("H1",C)
 // Create ambulance
 const ambulance = new Ambulance(A)
 
-// Define ambulance route
-const route = [A,B,C]
-
+const route = [B,C]
 ambulance.setRoute(route)
 
 console.log("Simulation started")
 
 /*
-Simulation Loop
+Signal control simulation
 
-Every 2 seconds
-Ambulance moves forward
+Every few seconds we change signals
+*/
+
+B.turnRed()
+C.turnRed()
+
+setTimeout(()=>{
+    console.log("Signal at B turned GREEN")
+    B.turnGreen()
+},4000)
+
+setTimeout(()=>{
+    console.log("Signal at C turned GREEN")
+    C.turnGreen()
+},8000)
+
+/*
+Simulation loop
 */
 
 const simulation = setInterval(()=>{
 
     const location = ambulance.move()
-
-    if(location === null){
-        console.log("Ambulance reached destination")
-        clearInterval(simulation)
-        return
-    }
 
     console.log("Ambulance at:",location.id)
 
@@ -56,22 +59,31 @@ const simulation = setInterval(()=>{
 
 },2000)
 
-// example: STEP 3 — Build the Simulation Engine
+// STEP 4 — Add Traffic Signal Behavior
 // Goal of this step
 
-// We want the system to behave like a time-based simulation.
+// Introduce traffic lights that control movement.
 
-// Every second the system should:
+// Behavior we want:
+// If signal = RED
+// Ambulance must STOP
 
-// Check where the ambulance is
+// If signal = GREEN
+// Ambulance can MOVE
 
-// Move it to the next intersection
+// Expected Output
 
-// Print the current location
+// Example run:Simulation started
+// Signal RED at B Ambulance waiting...
+// Ambulance at: A
 
-// Example output we want:
-// Ambulance moving...
-// Ambulance at A
-// Ambulance at B
-// Ambulance at C
+// Signal at B turned GREEN
+
+// Ambulance at: B
+
+// Signal RED at C Ambulance waiting...
+
+// Signal at C turned GREEN
+
+// Ambulance at: C
 // Arrived at hospital
