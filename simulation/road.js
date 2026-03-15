@@ -1,42 +1,37 @@
 /*
-Road Class
------------
+ROAD CLASS
+----------
+
 Represents a road connecting two intersections.
 
-In real life:
-A road connects two traffic signals.
-
 Example:
-Signal A  -------- Road --------  Signal B
 
-This allows vehicles to move between intersections.
+A ---- Road ---- B
+
+Each road stores:
+- start intersection
+- end intersection
+- length of the road
 */
 
 class Road {
 
     /*
-    start -> starting intersection
-    end -> destination intersection
-    length -> distance of the road
+    start → starting signal
+    end   → ending signal
+    length → road distance
     */
-    constructor(start, end, length) {
 
-        // intersection where road begins
+    constructor(start,end,length){
+
+        // where road begins
         this.start = start
 
-        // intersection where road ends
+        // where road ends
         this.end = end
 
-        // road distance
+        // length of the road
         this.length = length
-
-        /*
-        Later we will add:
-        - traffic density
-        - number of vehicles
-        - speed limit
-        - congestion
-        */
     }
 }
 

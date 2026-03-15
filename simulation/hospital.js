@@ -1,28 +1,29 @@
 /*
-Hospital Class
+HOSPITAL CLASS
 --------------
-Represents the hospital where the ambulance must reach.
+
+Represents the destination hospital.
 
 In our simulation:
-Hospitals are attached to an intersection.
+Hospitals exist at intersections.
 
 Example:
-If hospital is at intersection C
-Ambulance route must end at C.
+Hospital located at intersection C
 */
 
 class Hospital {
 
     /*
-    id -> hospital identifier
-    intersection -> location where hospital exists
+    id → hospital identifier
+    intersection → location of hospital
     */
-    constructor(id, intersection) {
 
-        // unique hospital identifier
+    constructor(id,intersection){
+
+        // hospital name
         this.id = id
 
-        // hospital location
+        // intersection where hospital exists
         this.location = intersection
     }
 }
