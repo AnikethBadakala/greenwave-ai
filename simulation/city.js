@@ -190,3 +190,17 @@ const simulation = setInterval(()=>{
     }
 
 },2000)
+
+
+// What Your Simulator Now Does
+
+// Your system now simulates:
+// 🚗 normal vehicles
+// 🚦 traffic signals
+// 🚑 ambulance priority
+// 🏥 hospital destination
+
+// Vehicles follow signals
+// Ambulance triggers GreenWave
+// Signals turn GREEN
+// Ambulance reaches hospital faster
