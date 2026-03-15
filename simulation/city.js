@@ -2,14 +2,14 @@
 CITY SIMULATION ENGINE
 ----------------------
 
-This file runs the entire traffic simulation.
+This file initializes the virtual city
+and runs the simulation loop.
 
-New features in STEP 8:
+Major responsibilities:
 
-- Signal timers
-- Vehicle queues
-- Traffic congestion
-- GreenWave ambulance priority
+1. Create environment objects
+2. Create AI agent
+3. Run simulation clock
 */
 
 const Intersection = require("./intersection")
@@ -17,10 +17,15 @@ const Road = require("./road")
 const Hospital = require("./hospital")
 const Ambulance = require("./ambulance")
 const Vehicle = require("./vehicle")
+const CityState = require("./cityState")
+
+const TrafficAgent = require("../ai/trafficAgent")
 
 
 
-// CREATE INTERSECTIONS
+/*
+CREATE INTERSECTIONS
+*/
 
 const A = new Intersection("A",0,0)
 const B = new Intersection("B",1,0)
@@ -28,20 +33,26 @@ const C = new Intersection("C",2,0)
 
 
 
-// CREATE ROADS
+/*
+CREATE ROADS
+*/
 
 const road1 = new Road(A,B,1)
 const road2 = new Road(B,C,1)
 
 
 
-// CREATE HOSPITAL
+/*
+CREATE HOSPITAL
+*/
 
 const hospital = new Hospital("H1",C)
 
 
 
-// CREATE AMBULANCE
+/*
+CREATE AMBULANCE
+*/
 
 const ambulance = new Ambulance(A)
 
@@ -51,14 +62,11 @@ ambulance.setRoute(route)
 
 
 
-// CREATE TRAFFIC VEHICLES
+/*
+CREATE TRAFFIC VEHICLES
+*/
 
 const vehicles = []
-
-/*
-Create multiple vehicles
-to simulate traffic congestion
-*/
 
 for(let i=1;i<=5;i++){
 
@@ -71,46 +79,34 @@ for(let i=1;i<=5;i++){
 
 
 
-// SIGNAL INITIAL STATE
+/*
+SET INITIAL SIGNAL STATES
+*/
 
 B.turnRed()
 C.turnRed()
 
 
 
-// GREENWAVE SETTINGS
+/*
+CREATE CITY STATE
+*/
 
-const activationDistance = 1
+const cityState = new CityState(
+    [A,B,C],
+    [road1,road2],
+    vehicles,
+    ambulance,
+    hospital
+)
 
 
 
 /*
-GreenWave controller gives
-ambulance priority
+CREATE AI AGENT
 */
 
-function greenWaveController(){
-
-    const nextIntersection = ambulance.route[ambulance.routeIndex]
-
-    if(!nextIntersection){
-        return
-    }
-
-    const distance = nextIntersection.distanceTo(ambulance.currentLocation)
-
-    console.log("Ambulance distance to",nextIntersection.id,"=",distance)
-
-    if(distance <= activationDistance){
-
-        if(nextIntersection.signalState === "RED"){
-
-            console.log("GreenWave activated for signal",nextIntersection.id)
-
-            nextIntersection.turnGreen()
-        }
-    }
-}
+const trafficAgent = new TrafficAgent(cityState)
 
 
 
@@ -120,29 +116,33 @@ console.log("Simulation started")
 
 /*
 SIMULATION LOOP
-
-Runs every 2 seconds
 */
 
 const simulation = setInterval(()=>{
 
-    // update traffic signals
-    B.updateSignal()
-    C.updateSignal()
+    /*
+    AI agent observes environment
+    and controls signals
+    */
 
-    // run ambulance priority logic
-    greenWaveController()
+    trafficAgent.step()
 
-    // move traffic vehicles
+
+
+    /*
+    Move normal vehicles
+    */
+
     vehicles.forEach(vehicle=>{
         vehicle.move()
     })
 
-    // process vehicle queues
-    B.processQueue()
-    C.processQueue()
 
-    // move ambulance
+
+    /*
+    Move ambulance
+    */
+
     const location = ambulance.move()
 
     if(!location){
@@ -156,6 +156,12 @@ const simulation = setInterval(()=>{
 
     console.log("Ambulance at:",location.id)
 
+
+
+    /*
+    Check hospital arrival
+    */
+
     if(location === hospital.location){
 
         console.log("Arrived at hospital")
@@ -164,20 +170,3 @@ const simulation = setInterval(()=>{
     }
 
 },2000)
-
-// What Your Simulator Now Does
-
-// You now have a mini traffic ecosystem:
-// 🚗 multiple vehicles
-// 🚦 signal cycles
-// 🚗 queues at signals
-// 🚑 ambulance priority
-// 🏥 hospital destination
-
-// Simulation behavior:
-// Vehicles wait at red
-// Queues form
-// Signals change
-// Ambulance triggers GreenWave
-// Traffic clears
-// Ambulance reaches hospital
