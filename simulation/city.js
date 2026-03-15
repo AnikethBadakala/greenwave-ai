@@ -1,15 +1,6 @@
 /*
 City Simulation Engine
-----------------------
-
-This file builds a mini city.
-
-Steps:
-1. Create intersections (traffic signals)
-2. Create roads connecting them
-3. Place hospital
-4. Place ambulance
-5. Print current city state
+This runs the simulation of the city.
 */
 
 const Intersection = require("./intersection")
@@ -17,47 +8,50 @@ const Road = require("./road")
 const Hospital = require("./hospital")
 const Ambulance = require("./ambulance")
 
-/*
-Step 1: Create Intersections
+// Create intersections
+const A = new Intersection("A",0,0)
+const B = new Intersection("B",1,0)
+const C = new Intersection("C",2,0)
 
-Think of them as traffic signals.
-*/
-const A = new Intersection("A", 0, 0)
-const B = new Intersection("B", 1, 0)
-const C = new Intersection("C", 2, 0)
+// Create roads
+const road1 = new Road(A,B,1)
+const road2 = new Road(B,C,1)
 
-/*
-Step 2: Create Roads connecting intersections
+// Create hospital
+const hospital = new Hospital("H1",C)
 
-A ---- B ---- C
-*/
-const road1 = new Road(A, B, 1)
-const road2 = new Road(B, C, 1)
-
-/*
-Step 3: Create Hospital
-Hospital located at intersection C
-*/
-const hospital = new Hospital("H1", C)
-
-/*
-Step 4: Create Ambulance
-Ambulance starts at intersection A
-*/
+// Create ambulance
 const ambulance = new Ambulance(A)
 
-/*
-Step 5: Display simulation status
-*/
-console.log("City initialized")
-console.log("Ambulance at:", ambulance.currentLocation.id)
-console.log("Hospital at:", hospital.location.id)
+// Define ambulance route
+const route = [A,B,C]
+
+ambulance.setRoute(route)
+
+console.log("Simulation started")
 
 /*
-Later this file will also:
-- simulate traffic signals
-- simulate vehicles
-- simulate ambulance movement
-- apply AI routing
-- control signals automatically
+Simulation Loop
+
+Every 2 seconds
+Ambulance moves forward
 */
+
+const simulation = setInterval(()=>{
+
+    const location = ambulance.move()
+
+    if(location === null){
+        console.log("Ambulance reached destination")
+        clearInterval(simulation)
+        return
+    }
+
+    console.log("Ambulance at:",location.id)
+
+    if(location === hospital.location){
+        console.log("Arrived at hospital")
+        clearInterval(simulation)
+    }
+
+},2000)

@@ -3,45 +3,58 @@ Ambulance Class
 ---------------
 Represents the emergency vehicle moving through the city.
 
-Responsibilities:
-- know where it currently is
-- know the destination hospital
-- follow a route
-- move between intersections
+Responsibilities
+- track location
+- follow route
+- move intersection to intersection
 */
 
 class Ambulance {
 
-    /*
-    start -> starting intersection
-    */
     constructor(start) {
 
-        // current location of ambulance
+        // Current intersection
         this.currentLocation = start
 
-        // route will contain intersections to visit
+        // Route = list of intersections to travel
         this.route = []
 
-        // movement speed (simulation value)
+        // index of next location
+        this.routeIndex = 0
+
+        // speed of ambulance (simulation only)
         this.speed = 1
     }
 
     /*
-    move(nextIntersection)
+    setRoute(route)
 
-    Moves ambulance to next intersection.
-
-    In real system:
-    Movement would be based on:
-    - time
-    - distance
-    - traffic conditions
+    Route example:
+    [A,B,C]
     */
-    move(nextIntersection) {
+    setRoute(route){
+        this.route = route
+        this.routeIndex = 0
+    }
 
-        // update current location
-        this.currentLocation = nextIntersection
+    /*
+    move()
+
+    Moves ambulance to next intersection in route.
+    */
+    move(){
+
+        if(this.routeIndex >= this.route.length){
+            return null
+        }
+
+        const nextLocation = this.route[this.routeIndex]
+
+        this.currentLocation = nextLocation
+
+        this.routeIndex++
+
+        return this.currentLocation
     }
 }
 
