@@ -19,7 +19,7 @@ const Ambulance = require("./ambulance")
 const Vehicle = require("./vehicle")
 const CityState = require("./cityState")
 
-const TrafficAgent = require("../ai/trafficAgent")
+const RLAgent = require("../ai/rlAgent")
 
 
 
@@ -106,7 +106,7 @@ const cityState = new CityState(
 CREATE AI AGENT
 */
 
-const trafficAgent = new TrafficAgent(cityState)
+const trafficAgent = new RLAgent(cityState)
 
 
 
