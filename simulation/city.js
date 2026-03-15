@@ -18,35 +18,47 @@ const hospital = new Hospital("H1",C)
 // Create ambulance
 const ambulance = new Ambulance(A)
 
+// Route
 const route = [B,C]
 ambulance.setRoute(route)
 
 console.log("Simulation started")
 
 /*
-Signal control simulation
-
-Every few seconds we change signals
+Initially all signals RED
 */
-
 B.turnRed()
 C.turnRed()
 
-setTimeout(()=>{
-    console.log("Signal at B turned GREEN")
-    B.turnGreen()
-},4000)
+/*
+GreenWave Controller
 
-setTimeout(()=>{
-    console.log("Signal at C turned GREEN")
-    C.turnGreen()
-},8000)
+If ambulance is about to reach a signal
+we automatically turn that signal GREEN
+*/
+
+function greenWaveController(){
+
+    const nextIntersection = ambulance.route[ambulance.routeIndex]
+
+    if(!nextIntersection){
+        return
+    }
+
+    if(nextIntersection.signalState === "RED"){
+        console.log("GreenWave activated for signal",nextIntersection.id)
+        nextIntersection.turnGreen()
+    }
+}
 
 /*
-Simulation loop
+Simulation Loop
 */
 
 const simulation = setInterval(()=>{
+
+    // Activate GreenWave logic
+    greenWaveController()
 
     const location = ambulance.move()
 
@@ -59,31 +71,12 @@ const simulation = setInterval(()=>{
 
 },2000)
 
-// STEP 4 — Add Traffic Signal Behavior
-// Goal of this step
+// GreenWave Algorithm (Automatic Signal Priority)
 
-// Introduce traffic lights that control movement.
-
-// Behavior we want:
-// If signal = RED
-// Ambulance must STOP
-
-// If signal = GREEN
-// Ambulance can MOVE
-
-// Expected Output
-
-// Example run:Simulation started
-// Signal RED at B Ambulance waiting...
-// Ambulance at: A
-
-// Signal at B turned GREEN
-
+// output 
+// Simulation started
+// GreenWave activated for signal B
 // Ambulance at: B
-
-// Signal RED at C Ambulance waiting...
-
-// Signal at C turned GREEN
-
+// GreenWave activated for signal C
 // Ambulance at: C
 // Arrived at hospital
