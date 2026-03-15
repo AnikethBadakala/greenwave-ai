@@ -55,3 +55,23 @@ const simulation = setInterval(()=>{
     }
 
 },2000)
+
+// example: STEP 3 — Build the Simulation Engine
+// Goal of this step
+
+// We want the system to behave like a time-based simulation.
+
+// Every second the system should:
+
+// Check where the ambulance is
+
+// Move it to the next intersection
+
+// Print the current location
+
+// Example output we want:
+// Ambulance moving...
+// Ambulance at A
+// Ambulance at B
+// Ambulance at C
+// Arrived at hospital
