@@ -1,48 +1,45 @@
 /*
-Vehicle Class
+VEHICLE CLASS
 -------------
 
-Represents a normal vehicle in the city.
+Represents normal traffic vehicles.
 
-Examples:
-cars
-bikes
-buses
-
-Vehicles follow traffic rules:
-- stop at RED signal
-- move at GREEN signal
+Vehicles obey signals and wait in queues.
 */
 
 class Vehicle {
 
     constructor(id,start){
 
-        // unique identifier for vehicle
         this.id = id
 
-        // current intersection
+        // vehicle starting position
         this.currentLocation = start
 
-        // vehicle route
+        // route to follow
         this.route = []
 
-        // next intersection index
         this.routeIndex = 0
     }
 
     /*
-    Define path for vehicle
+    setRoute()
+
+    Defines vehicle path
     */
 
     setRoute(route){
 
         this.route = route
+
         this.routeIndex = 0
     }
 
     /*
-    Move vehicle along route
+    move()
+
+    Vehicle attempts to move forward
+    depending on signal state
     */
 
     move(){
@@ -54,18 +51,20 @@ class Vehicle {
         const nextIntersection = this.route[this.routeIndex]
 
         /*
-        Vehicle checks signal state
+        If signal RED → join queue
         */
 
         if(!nextIntersection.canPass()){
 
             console.log("Vehicle",this.id,"waiting at RED signal",nextIntersection.id)
 
+            nextIntersection.addVehicleToQueue(this)
+
             return this.currentLocation
         }
 
         /*
-        Signal is green → move forward
+        If GREEN → vehicle moves
         */
 
         this.currentLocation = nextIntersection
@@ -76,7 +75,6 @@ class Vehicle {
 
         return this.currentLocation
     }
-
 }
 
 module.exports = Vehicle

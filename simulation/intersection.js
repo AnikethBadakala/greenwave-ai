@@ -4,60 +4,53 @@ INTERSECTION CLASS
 
 Represents a TRAFFIC SIGNAL in the city.
 
-In real life:
-An intersection is where multiple roads meet and a traffic light controls movement.
+In a real-world system a signal:
+- cycles between RED and GREEN
+- manages vehicle queues
+- controls traffic flow
 
-Example layout:
-
-        B
-        |
-A ---- Signal ---- C
-        |
-        D
-
-Each intersection stores:
-- ID (name of the signal)
-- Coordinates (x,y)
-- Current signal state (RED or GREEN)
-
-Coordinates help calculate distance between:
-ambulance ↔ signal
+This class now supports:
+1. Signal timers
+2. Vehicle queues
+3. Automatic signal switching
 */
 
 class Intersection {
 
     /*
-    Constructor runs when we create a new intersection object.
+    Constructor initializes a traffic signal.
 
-    Example:
-    const A = new Intersection("A",0,0)
-
-    Parameters:
-    id → name of the signal
-    x  → x coordinate in city grid
-    y  → y coordinate in city grid
+    id → signal name
+    x,y → location in virtual city
     */
 
     constructor(id,x,y){
 
-        // store intersection name
+        // Unique identifier for signal
         this.id = id
 
-        // position of signal in city
+        // Position in city grid
         this.x = x
         this.y = y
 
-        // default signal state
+        // Current signal state
         this.signalState = "RED"
+
+        // Queue of vehicles waiting at signal
+        this.vehicleQueue = []
+
+        // Signal timer counter
+        this.timer = 0
+
+        // Signal cycle duration (seconds)
+        this.cycleDuration = 6
     }
 
     /*
     turnGreen()
 
-    Changes signal to GREEN.
-
-    Real meaning:
-    Vehicles are allowed to pass.
+    Changes signal state to GREEN
+    allowing vehicles to pass
     */
 
     turnGreen(){
@@ -67,10 +60,8 @@ class Intersection {
     /*
     turnRed()
 
-    Changes signal to RED.
-
-    Real meaning:
-    Vehicles must STOP.
+    Changes signal state to RED
+    stopping vehicles
     */
 
     turnRed(){
@@ -80,8 +71,8 @@ class Intersection {
     /*
     canPass()
 
-    Used by vehicles to check if they
-    can cross the intersection.
+    Used by vehicles to check
+    if signal allows movement
     */
 
     canPass(){
@@ -89,28 +80,79 @@ class Intersection {
     }
 
     /*
-    distanceTo(point)
+    addVehicleToQueue(vehicle)
 
-    Calculates distance between this intersection
-    and another object (ambulance or vehicle).
+    Adds vehicle to waiting queue
+    */
 
-    Formula used:
+    addVehicleToQueue(vehicle){
+        this.vehicleQueue.push(vehicle)
+    }
 
-    distance = √((x2-x1)^2 + (y2-y1)^2)
+    /*
+    processQueue()
+
+    When signal turns GREEN
+    vehicles are released from queue
+    */
+
+    processQueue(){
+
+        if(this.signalState !== "GREEN"){
+            return
+        }
+
+        if(this.vehicleQueue.length === 0){
+            return
+        }
+
+        const vehicle = this.vehicleQueue.shift()
+
+        console.log("Vehicle",vehicle.id,"leaving queue at",this.id)
+    }
+
+    /*
+    updateSignal()
+
+    Simulates automatic traffic signal cycles
+    */
+
+    updateSignal(){
+
+        // increase timer every simulation tick
+        this.timer++
+
+        // when timer exceeds cycle duration
+        if(this.timer >= this.cycleDuration){
+
+            if(this.signalState === "RED"){
+                this.turnGreen()
+                console.log("Signal",this.id,"turned GREEN")
+            }
+            else{
+                this.turnRed()
+                console.log("Signal",this.id,"turned RED")
+            }
+
+            // reset timer
+            this.timer = 0
+        }
+    }
+
+    /*
+    distanceTo()
+
+    Calculates distance between this signal
+    and another point (ambulance)
     */
 
     distanceTo(point){
 
-        // difference in x coordinates
         const dx = this.x - point.x
-
-        // difference in y coordinates
         const dy = this.y - point.y
 
-        // Euclidean distance calculation
         return Math.sqrt(dx*dx + dy*dy)
     }
 }
 
-// export class so other files can use it
 module.exports = Intersection
